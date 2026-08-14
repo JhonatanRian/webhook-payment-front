@@ -9,11 +9,32 @@ const isMockEnabled =
   import.meta.env.VITE_ENABLE_MOCKS === 'true' ||
   import.meta.env.MODE === 'test';
 
-const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1';
-const baseURL = rawBaseUrl.endsWith('/') ? rawBaseUrl : `${rawBaseUrl}/`;
+export function getBaseApiUrl(): string {
+  const envUrl = (import.meta.env.VITE_API_BASE_URL || '').trim();
+
+  if (!envUrl) {
+    return '/api/v1/';
+  }
+
+  // Remove trailing slashes
+  const cleanUrl = envUrl.replace(/\/+$/, '');
+
+  // If the URL already ends with /api/v1, ensure trailing slash
+  if (cleanUrl.endsWith('/api/v1')) {
+    return `${cleanUrl}/`;
+  }
+
+  // If the URL ends with /api, append v1/
+  if (cleanUrl.endsWith('/api')) {
+    return `${cleanUrl}/v1/`;
+  }
+
+  // Otherwise (e.g. "https://myapp.jrmdev.com.br"), append /api/v1/
+  return `${cleanUrl}/api/v1/`;
+}
 
 export const apiClient = axios.create({
-  baseURL,
+  baseURL: getBaseApiUrl(),
   timeout: 12000,
   headers: {
     'Content-Type': 'application/json',
