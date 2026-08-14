@@ -24,9 +24,9 @@ export function DashboardPage() {
   const isLoading = isInvoicesLoading || isTransfersLoading;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Dashboard Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zoho-slate-border dark:border-zoho-slate-darkBorder">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zoho-slate-border dark:border-zoho-slate-darkBorder">
         <div>
           <h1 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
             <LayoutDashboard className="w-5 h-5 text-zoho-blue" />
@@ -60,17 +60,17 @@ export function DashboardPage() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
             {[1, 2, 3, 4].map((n) => (
               <div key={n} className="h-24 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
             ))}
           </div>
-          <div className="h-44 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
-          <div className="h-60 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
+          <div className="h-40 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
+          <div className="h-56 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
         </div>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-4">
           {/* Key Metrics / KPI */}
           <StatsOverview
             invoices={invoices}

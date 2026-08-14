@@ -10,10 +10,17 @@ export default {
       colors: {
         zoho: {
           blue: {
-            DEFAULT: "#0067FF",
-            hover: "#0053CC",
-            light: "#EBF3FF",
-            dark: "#0047B3",
+            DEFAULT: "#1D6FA4",
+            hover: "#155A87",
+            light: "#E8F4FD",
+            dark: "#0F4C73",
+          },
+          orange: {
+            DEFAULT: "#F97316",
+            hover: "#EA6C0A",
+            light: "#FFF3E8",
+            dark: "#C25A09",
+            darkLight: "rgba(249, 115, 22, 0.12)",
           },
           slate: {
             bg: "#F8FAFC",
