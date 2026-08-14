@@ -15,9 +15,12 @@ coverage
 .env
 .env*.local
 
-# Internal Plans & Notes
+# Internal Plans, Notes & Screenshots
 plan.md
 plano_*.md
+*.png
+*.jpg
+*.jpeg
 
 # Editor directories and files
 .vscode/*

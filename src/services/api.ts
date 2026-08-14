@@ -9,8 +9,11 @@ const isMockEnabled =
   import.meta.env.VITE_ENABLE_MOCKS === 'true' ||
   import.meta.env.MODE === 'test';
 
+const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+const baseURL = rawBaseUrl.endsWith('/') ? rawBaseUrl : `${rawBaseUrl}/`;
+
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',
+  baseURL,
   timeout: 12000,
   headers: {
     'Content-Type': 'application/json',
@@ -67,7 +70,7 @@ export const api = {
         if (params?.size) queryParams.size = params.size;
         if (params?.status && params.status !== 'all') queryParams.status = params.status;
 
-        const res = await apiClient.get<Page<Invoice>>('/invoices', { params: queryParams });
+        const res = await apiClient.get<Page<Invoice>>('invoices', { params: queryParams });
         return res.data;
       } catch (err) {
         console.warn('Fallback to mock data for invoices:', err);
@@ -78,7 +81,7 @@ export const api = {
     getBatches: async (params?: { page?: number; size?: number }): Promise<Page<InvoiceBatch>> => {
       if (isMockEnabled) return mockApi.getBatches(params);
       try {
-        const res = await apiClient.get<Page<InvoiceBatch>>('/invoices/batches', { params });
+        const res = await apiClient.get<Page<InvoiceBatch>>('invoices/batches', { params });
         return res.data;
       } catch (err) {
         console.warn('Fallback to mock data for batches:', err);
@@ -89,7 +92,7 @@ export const api = {
     issueBatch: async (data?: IssueBatchRequest): Promise<InvoiceBatch> => {
       if (isMockEnabled) return mockApi.issueBatch(data?.count);
       try {
-        const res = await apiClient.post<InvoiceBatch>('/invoices/batch', null, {
+        const res = await apiClient.post<InvoiceBatch>('invoices/batch', null, {
           params: data?.count ? { count: data.count } : undefined,
         });
         return res.data;
@@ -109,7 +112,7 @@ export const api = {
         if (params?.size) queryParams.size = params.size;
         if (params?.status && params.status !== 'all') queryParams.status = params.status;
 
-        const res = await apiClient.get<Page<TransferRecord>>('/transfers', { params: queryParams });
+        const res = await apiClient.get<Page<TransferRecord>>('transfers', { params: queryParams });
         return res.data;
       } catch (err) {
         console.warn('Fallback to mock data for transfers:', err);
@@ -122,7 +125,7 @@ export const api = {
     getStatus: async (): Promise<SchedulerStatus> => {
       if (isMockEnabled) return mockApi.getSchedulerStatus();
       try {
-        const res = await apiClient.get<SchedulerStatus>('/scheduler/status');
+        const res = await apiClient.get<SchedulerStatus>('scheduler/status');
         return res.data;
       } catch (err) {
         console.warn('Fallback to mock data for scheduler:', err);
@@ -133,7 +136,7 @@ export const api = {
     triggerCycle: async (): Promise<TriggerCycleResponse> => {
       if (isMockEnabled) return mockApi.triggerSchedulerCycle();
       try {
-        const res = await apiClient.post<TriggerCycleResponse>('/scheduler/trigger');
+        const res = await apiClient.post<TriggerCycleResponse>('scheduler/trigger');
         return res.data;
       } catch (err) {
         console.warn('Fallback to mock for scheduler trigger:', err);
@@ -144,7 +147,7 @@ export const api = {
     changeMode: async (data: ChangeModeRequest): Promise<SchedulerStatus> => {
       if (isMockEnabled) return mockApi.changeSchedulerMode(data.mode);
       try {
-        const res = await apiClient.put<SchedulerStatus>('/scheduler/mode', data);
+        const res = await apiClient.put<SchedulerStatus>('scheduler/mode', data);
         return res.data;
       } catch (err) {
         console.warn('Fallback to mock for scheduler mode change:', err);
@@ -155,7 +158,7 @@ export const api = {
     reset: async (): Promise<ResetSchedulerResponse> => {
       if (isMockEnabled) return mockApi.resetScheduler();
       try {
-        const res = await apiClient.post<ResetSchedulerResponse>('/scheduler/reset');
+        const res = await apiClient.post<ResetSchedulerResponse>('scheduler/reset');
         return res.data;
       } catch (err) {
         console.warn('Fallback to mock for scheduler reset:', err);

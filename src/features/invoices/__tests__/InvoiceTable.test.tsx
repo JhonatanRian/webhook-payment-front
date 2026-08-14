@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { screen, userEvent, renderWithProviders, waitFor } from '@/test/test-utils';
+import { screen, userEvent, fireEvent, renderWithProviders, waitFor } from '@/test/test-utils';
 import { InvoiceTable } from '../components/InvoiceTable';
 import { mockInvoices } from '@/mocks/data';
 import * as exportUtils from '@/utils/export';
@@ -19,7 +19,7 @@ describe('InvoiceTable component', () => {
     renderWithProviders(<InvoiceTable />);
 
     const searchInput = screen.getByPlaceholderText(/buscar por pagador/i);
-    await userEvent.type(searchInput, mockInvoices[0].name);
+    fireEvent.change(searchInput, { target: { value: mockInvoices[0].name } });
 
     await waitFor(() => {
       expect(screen.getByText(mockInvoices[0].name)).toBeInTheDocument();
