@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "🔍 [Pre-Push Hook] Verificando linting, tipos e cobertura de testes..."
+
+pnpm lint || { echo "❌ Linting falhou!"; exit 1; }
+pnpm tsc -b || { echo "❌ Verificação de tipos TypeScript falhou!"; exit 1; }
+pnpm test:coverage || { echo "❌ Testes ou Cobertura não atingiram as metas!"; exit 1; }
+
+echo "✅ [Pre-Push Hook] Verificações concluídas com sucesso! Prosseguindo com o push..."
