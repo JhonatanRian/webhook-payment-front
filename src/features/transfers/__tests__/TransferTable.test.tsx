@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { screen, userEvent, renderWithProviders, waitFor } from '@/test/test-utils';
+import { screen, userEvent, fireEvent, renderWithProviders, waitFor } from '@/test/test-utils';
 import { TransferTable } from '../components/TransferTable';
 import { mockTransfers } from '@/mocks/data';
 import * as exportUtils from '@/utils/export';
@@ -25,7 +25,7 @@ describe('TransferTable component', () => {
     renderWithProviders(<TransferTable />);
 
     const searchInput = screen.getByPlaceholderText(/buscar por favorecido/i);
-    await userEvent.type(searchInput, 'Stark');
+    fireEvent.change(searchInput, { target: { value: 'Stark' } });
 
     await waitFor(() => {
       const items = screen.getAllByText(mockTransfers[0].target_name);
