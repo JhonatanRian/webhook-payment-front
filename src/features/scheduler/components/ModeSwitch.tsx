@@ -54,7 +54,7 @@ export function ModeSwitch({ currentMode }: ModeSwitchProps) {
                 Recorrente (24h)
               </span>
               {currentMode === 'recurring' && (
-                <span className="text-2xs text-zoho-blue font-bold font-mono">ATIVO</span>
+                <span className="text-2xs text-zoho-orange font-bold font-mono">ATIVO</span>
               )}
             </div>
             <p className="text-2xs text-zoho-slate-muted dark:text-zoho-slate-darkMuted mt-0.5">
@@ -89,7 +89,7 @@ export function ModeSwitch({ currentMode }: ModeSwitchProps) {
                 Ciclo Único (Once)
               </span>
               {currentMode === 'once' && (
-                <span className="text-2xs text-zoho-blue font-bold font-mono">ATIVO</span>
+                <span className="text-2xs text-zoho-orange font-bold font-mono">ATIVO</span>
               )}
             </div>
             <p className="text-2xs text-zoho-slate-muted dark:text-zoho-slate-darkMuted mt-0.5">

@@ -28,7 +28,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const getVariantStyles = () => {
       switch (variant) {
         case 'primary':
-          return 'bg-zoho-blue text-white hover:bg-zoho-blue-hover focus-visible:ring-zoho-blue shadow-zoho-sm active:bg-blue-700';
+          return 'bg-zoho-orange text-white hover:bg-zoho-orange-hover focus-visible:ring-zoho-orange shadow-zoho-sm active:bg-zoho-orange-dark';
         case 'secondary':
           return 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700';
         case 'outline':
@@ -36,7 +36,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         case 'danger':
           return 'bg-rose-600 text-white hover:bg-rose-700 focus-visible:ring-rose-500 shadow-zoho-sm';
         case 'subtle':
-          return 'bg-blue-50 dark:bg-blue-950/40 text-zoho-blue dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200/60 dark:border-blue-800/40';
+          return 'bg-orange-50 dark:bg-orange-950/30 text-zoho-orange dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/40 border border-orange-200/60 dark:border-orange-800/40';
         case 'ghost':
         default:
           return 'bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';

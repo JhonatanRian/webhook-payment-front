@@ -17,7 +17,7 @@ export function Header({ onOpenSidebar }: HeaderProps) {
   const isHealthy = health?.status === 'healthy' || health?.status === 'ok';
 
   return (
-    <header className="sticky top-0 z-30 h-14 bg-white/95 dark:bg-zoho-slate-darkCard/95 backdrop-blur-md border-b border-zoho-slate-border dark:border-zoho-slate-darkBorder px-4 sm:px-6 flex items-center justify-between transition-colors">
+    <header className="sticky top-0 z-30 h-11 bg-white/95 dark:bg-zoho-slate-darkCard/95 backdrop-blur-md border-b border-zoho-slate-border dark:border-zoho-slate-darkBorder px-3 sm:px-5 flex items-center justify-between transition-colors">
       {/* Left: Mobile Toggle & Status */}
       <div className="flex items-center gap-3">
         <button
@@ -46,9 +46,16 @@ export function Header({ onOpenSidebar }: HeaderProps) {
         {scheduler && (
           <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full border border-zoho-slate-border dark:border-zoho-slate-darkBorder text-2xs text-slate-700 dark:text-slate-300 font-mono">
             <span className="text-zoho-blue font-semibold">
-              Ciclo #{scheduler.scheduled_cycles_completed + scheduler.manual_triggers_completed}/
-              {scheduler.max_cycles}
+              Auto {scheduler.scheduled_cycles_completed}/{scheduler.max_cycles}
             </span>
+            {scheduler.manual_triggers_completed > 0 && (
+              <>
+                <span className="text-slate-300 dark:text-slate-600">·</span>
+                <span className="text-zoho-orange dark:text-orange-400 font-semibold">
+                  {scheduler.manual_triggers_completed} manual{scheduler.manual_triggers_completed > 1 ? 'is' : ''}
+                </span>
+              </>
+            )}
             <span className="text-slate-300 dark:text-slate-600">•</span>
             <span className="text-zoho-slate-muted dark:text-zoho-slate-darkMuted uppercase">
               {scheduler.mode === 'recurring' ? '24h Recorrente' : 'Modo Único'}

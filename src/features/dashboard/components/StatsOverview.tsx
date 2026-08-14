@@ -34,12 +34,11 @@ export function StatsOverview({
     ? Math.round((creditedInvoices.length / invoices.length) * 100)
     : 0;
 
-  const totalCycles = scheduler
-    ? scheduler.scheduled_cycles_completed + scheduler.manual_triggers_completed
-    : 0;
+  const scheduledCycles = scheduler?.scheduled_cycles_completed ?? 0;
+  const manualCycles = scheduler?.manual_triggers_completed ?? 0;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
       {/* KPI 1: Faturamento Total Emitido */}
       <Card padding="sm" className="space-y-2">
         <div className="flex items-center justify-between">
@@ -112,14 +111,21 @@ export function StatsOverview({
           </div>
         </div>
         <div className="text-xl font-bold font-mono text-slate-900 dark:text-white tracking-tight">
-          {totalCycles} / {scheduler?.max_cycles || 8}{' '}
+          {scheduledCycles} / {scheduler?.max_cycles || 8}{' '}
           <span className="text-xs font-normal text-zoho-slate-muted dark:text-zoho-slate-darkMuted">
-            ciclos
+            auto
           </span>
         </div>
-        <div className="flex items-center gap-1.5 text-2xs text-zoho-slate-muted dark:text-zoho-slate-darkMuted font-mono">
+        <div className="flex items-center gap-1.5 text-2xs font-mono">
           <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
-          <span>{scheduler?.is_running ? 'Agendador Operante' : 'Pausado'}</span>
+          <span className="text-zoho-slate-muted dark:text-zoho-slate-darkMuted">
+            {scheduler?.is_running ? 'Agendador Operante' : 'Pausado'}
+          </span>
+          {manualCycles > 0 && (
+            <span className="text-zoho-orange dark:text-orange-400 font-semibold ml-1">
+              · {manualCycles} manual{manualCycles > 1 ? 'is' : ''}
+            </span>
+          )}
         </div>
       </Card>
     </div>
