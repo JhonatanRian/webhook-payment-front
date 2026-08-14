@@ -412,12 +412,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Lowercase Repository Name
+        id: prep
+        run: |
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ${{ steps.prep.outputs.image }}:latest
           build-args: |
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL || '/api/v1' }}
           cache-from: type=gha
