@@ -1,7 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { api, apiClient } from '../api';
+import { api, apiClient, getBaseApiUrl } from '../api';
 
 describe('api client & services', () => {
+  it('should normalize base URL properly', () => {
+    const url = getBaseApiUrl();
+    expect(url.endsWith('/')).toBe(true);
+    expect(url).toContain('api/v1');
+  });
+
   it('should have apiClient configured with baseURL and timeout', () => {
     expect(apiClient.defaults.timeout).toBe(12000);
     expect(apiClient.defaults.headers['Content-Type']).toBe('application/json');
