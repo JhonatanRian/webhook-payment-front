@@ -13,7 +13,10 @@ export function MoneyFlowCard({ invoices, transfers }: MoneyFlowCardProps) {
   const totalInvoiced = invoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
   const creditedInvoices = invoices.filter((i) => i.status === 'credited');
   const totalCredited = creditedInvoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
-  const totalTransferred = transfers.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
+
+  // Liquidação: Conta apenas transferências com status 'success'
+  const successTransfers = transfers.filter((t) => t.status === 'success');
+  const totalLiquidated = successTransfers.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
 
   return (
     <Card padding="md" className="space-y-4">
@@ -75,10 +78,10 @@ export function MoneyFlowCard({ invoices, transfers }: MoneyFlowCardProps) {
             <ArrowRight className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">
-            {formatCentsToBRL(totalTransferred || totalCredited)}
+            {formatCentsToBRL(totalLiquidated)}
           </div>
           <p className="text-2xs text-zoho-slate-muted dark:text-zoho-slate-darkMuted">
-            {transfers.length} repasses efetuados com sucesso
+            {successTransfers.length} repasse{successTransfers.length !== 1 ? 's' : ''} efetuado{successTransfers.length !== 1 ? 's' : ''} com sucesso
           </p>
         </div>
       </div>

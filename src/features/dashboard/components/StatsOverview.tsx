@@ -27,8 +27,10 @@ export function StatsOverview({
   // Calculando totais
   const totalInvoiced = invoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
   const creditedInvoices = invoices.filter((i) => i.status === 'credited');
-  const totalCredited = creditedInvoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
-  const totalTransferred = transfers.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
+
+  // Liquidação: Conta apenas transferências com status 'success'
+  const successTransfers = transfers.filter((t) => t.status === 'success');
+  const totalLiquidated = successTransfers.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
 
   const conversionRate = invoices.length > 0
     ? Math.round((creditedInvoices.length / invoices.length) * 100)
@@ -68,11 +70,13 @@ export function StatsOverview({
           </div>
         </div>
         <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tracking-tight">
-          {formatCentsToBRL(totalTransferred || totalCredited)}
+          {formatCentsToBRL(totalLiquidated)}
         </div>
         <div className="flex items-center gap-1 text-2xs text-emerald-600 dark:text-emerald-400 font-mono">
           <ArrowUpRight className="w-3 h-3" />
-          <span>{transfers.length} transferências Stark</span>
+          <span>
+            {successTransfers.length} {transfers.length > 0 ? `de ${transfers.length}` : ''} liquidada{transfers.length > 1 ? 's' : ''}
+          </span>
         </div>
       </Card>
 
