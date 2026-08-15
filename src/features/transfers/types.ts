@@ -1,4 +1,4 @@
-export type TransferStatus = 'success' | 'processing' | 'failed';
+export type TransferStatus = 'created' | 'pending' | 'processing' | 'success' | 'failed' | 'canceled';
 
 export interface TransferRecord {
   id: string;
