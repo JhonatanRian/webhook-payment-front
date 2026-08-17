@@ -3,6 +3,7 @@ import { ApiErrorResponse, HealthCheckResponse, Page } from '@/types/api';
 import { Invoice, InvoiceBatch, IssueBatchRequest } from '@/features/invoices/types';
 import { TransferRecord } from '@/features/transfers/types';
 import { ChangeModeRequest, ResetSchedulerResponse, SchedulerStatus, TriggerCycleResponse } from '@/features/scheduler/types';
+import { DashboardSummaryResponse } from '@/features/dashboard/types';
 import { mockApi } from '@/mocks/handlers';
 
 const isMockEnabled =
@@ -184,6 +185,19 @@ export const api = {
       } catch (err) {
         console.warn('Fallback to mock for scheduler reset:', err);
         return mockApi.resetScheduler();
+      }
+    },
+  },
+
+  dashboard: {
+    getSummary: async (): Promise<DashboardSummaryResponse> => {
+      if (isMockEnabled) return mockApi.getDashboardSummary();
+      try {
+        const res = await apiClient.get<DashboardSummaryResponse>('dashboard/summary');
+        return res.data;
+      } catch (err) {
+        console.warn('Fallback to mock data for dashboard summary:', err);
+        return mockApi.getDashboardSummary();
       }
     },
   },

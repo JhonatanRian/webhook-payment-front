@@ -11,6 +11,10 @@ describe('DashboardPage component', () => {
     await waitFor(() => {
       expect(screen.getByText('Total Emitido Pix')).toBeInTheDocument();
       expect(screen.getByText('Total Liquidado')).toBeInTheDocument();
+      expect(screen.getByText('Fluxo de Liquidação e Orquestração Webhook')).toBeInTheDocument();
+      expect(screen.getByText('Últimas Faturas Pix')).toBeInTheDocument();
+      expect(screen.getByText('Últimas Transferências de Repasse')).toBeInTheDocument();
     });
   });
 });
+

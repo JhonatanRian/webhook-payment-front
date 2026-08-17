@@ -3,6 +3,7 @@ import { Page, HealthCheckResponse } from '@/types/api';
 import { Invoice, InvoiceBatch } from '@/features/invoices/types';
 import { TransferRecord } from '@/features/transfers/types';
 import { SchedulerStatus, TriggerCycleResponse } from '@/features/scheduler/types';
+import { DashboardSummaryResponse } from '@/features/dashboard/types';
 
 // In-memory state for mock mutation support
 let currentInvoices = [...mockInvoices];
@@ -191,5 +192,32 @@ export const mockApi = {
       next_run_time: new Date(Date.now() + 1000 * 60 * 180).toISOString(),
     };
     return { message: 'Contadores do agendador resetados com sucesso.', status: 'reset' };
+  },
+
+  getDashboardSummary: async (): Promise<DashboardSummaryResponse> => {
+    const totalInvoicedCents = currentInvoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+    const totalInvoicesCount = currentInvoices.length;
+
+    const creditedInvoices = currentInvoices.filter((i) => i.status === 'credited');
+    const totalCreditedCents = creditedInvoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+    const totalCreditedCount = creditedInvoices.length;
+
+    const successTransfers = currentTransfers.filter((t) => t.status === 'success');
+    const totalLiquidatedCents = successTransfers.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
+    const totalLiquidatedCount = successTransfers.length;
+
+    const conversionRatePercentage = totalInvoicesCount > 0
+      ? Number(((totalCreditedCount / totalInvoicesCount) * 100).toFixed(2))
+      : 0;
+
+    return {
+      total_invoiced_cents: totalInvoicedCents,
+      total_invoices_count: totalInvoicesCount,
+      total_credited_cents: totalCreditedCents,
+      total_credited_count: totalCreditedCount,
+      total_liquidated_cents: totalLiquidatedCents,
+      total_liquidated_count: totalLiquidatedCount,
+      conversion_rate_percentage: conversionRatePercentage,
+    };
   },
 };
