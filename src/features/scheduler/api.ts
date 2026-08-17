@@ -4,6 +4,7 @@ import { ChangeModeRequest } from './types';
 import { toast } from 'sonner';
 import { INVOICES_QUERY_KEY, BATCHES_QUERY_KEY } from '../invoices/api';
 import { TRANSFERS_QUERY_KEY } from '../transfers/api';
+import { DASHBOARD_SUMMARY_QUERY_KEY } from '../dashboard/api';
 
 export const SCHEDULER_QUERY_KEY = ['scheduler'];
 export const HEALTH_QUERY_KEY = ['health'];
@@ -33,6 +34,7 @@ export function useTriggerCycle() {
       queryClient.invalidateQueries({ queryKey: INVOICES_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: BATCHES_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: TRANSFERS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: DASHBOARD_SUMMARY_QUERY_KEY });
       toast.success('Ciclo manual disparado com sucesso!', {
         description: data.message || 'Lote emitido e agendador atualizado.',
       });
@@ -73,6 +75,8 @@ export function useResetCycles() {
       queryClient.invalidateQueries({ queryKey: SCHEDULER_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: INVOICES_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: BATCHES_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: TRANSFERS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: DASHBOARD_SUMMARY_QUERY_KEY });
       toast.success('Histórico e contadores resetados!', {
         description: 'Os 8 ciclos de 24 horas foram redefinidos para o estado inicial.',
       });

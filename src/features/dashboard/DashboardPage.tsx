@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useInvoices } from '@/features/invoices/api';
 import { useTransfers } from '@/features/transfers/api';
 import { useSchedulerStatus, useTriggerCycle } from '@/features/scheduler/api';
+import { useDashboardSummary } from './api';
 import { StatsOverview } from './components/StatsOverview';
 import { MoneyFlowCard } from './components/MoneyFlowCard';
 import { RecentActivityFeed } from './components/RecentActivityFeed';
@@ -12,8 +13,9 @@ import { Invoice } from '../invoices/types';
 import { TransferRecord } from '../transfers/types';
 
 export function DashboardPage() {
-  const { data: invoicesData, isLoading: isInvoicesLoading } = useInvoices({ page: 1, size: 50 });
-  const { data: transfersData, isLoading: isTransfersLoading } = useTransfers({ page: 1, size: 50 });
+  const { data: summary, isLoading: isSummaryLoading } = useDashboardSummary();
+  const { data: invoicesData, isLoading: isInvoicesLoading } = useInvoices({ page: 1, size: 10 });
+  const { data: transfersData, isLoading: isTransfersLoading } = useTransfers({ page: 1, size: 10 });
   const { data: schedulerStatus } = useSchedulerStatus();
   const triggerCycleMutation = useTriggerCycle();
 
@@ -21,7 +23,7 @@ export function DashboardPage() {
 
   const invoices = (invoicesData?.items || []) as unknown as Invoice[];
   const transfers = (transfersData?.items || []) as unknown as TransferRecord[];
-  const isLoading = isInvoicesLoading || isTransfersLoading;
+  const isLoading = isSummaryLoading || isInvoicesLoading || isTransfersLoading;
 
   return (
     <div className="space-y-4">
@@ -73,14 +75,12 @@ export function DashboardPage() {
         <div className="space-y-4">
           {/* Key Metrics / KPI */}
           <StatsOverview
-            invoices={invoices}
-            transfers={transfers}
+            summary={summary}
             scheduler={schedulerStatus || null}
-            totalInvoicesCount={invoicesData?.total}
           />
 
           {/* Money Flow Pipeline */}
-          <MoneyFlowCard invoices={invoices} transfers={transfers} />
+          <MoneyFlowCard summary={summary} />
 
           {/* Live Recent Feeds */}
           <RecentActivityFeed invoices={invoices} transfers={transfers} />

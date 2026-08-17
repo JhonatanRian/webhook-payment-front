@@ -1,6 +1,7 @@
 import { Invoice, InvoiceBatch } from '@/features/invoices/types';
 import { TransferRecord } from '@/features/transfers/types';
 import { SchedulerStatus } from '@/features/scheduler/types';
+import { DashboardSummaryResponse } from '@/features/dashboard/types';
 
 export const mockInvoices: Invoice[] = [
   {
@@ -238,4 +239,14 @@ export const mockSchedulerStatus: SchedulerStatus = {
   mode: 'recurring',
   is_running: true,
   next_run_time: new Date(Date.now() + 1000 * 60 * 145).toISOString(),
+};
+
+export const mockDashboardSummary: DashboardSummaryResponse = {
+  total_invoiced_cents: 1281917,
+  total_invoices_count: 157,
+  total_credited_cents: 1137828,
+  total_credited_count: 44,
+  total_liquidated_cents: 1300987,
+  total_liquidated_count: 50,
+  conversion_rate_percentage: 28.03,
 };

@@ -1,75 +1,48 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { StatsOverview } from '../components/StatsOverview';
-import { mockInvoices, mockTransfers, mockSchedulerStatus } from '@/mocks/data';
-import { TransferRecord } from '@/features/transfers/types';
+import { mockDashboardSummary, mockSchedulerStatus } from '@/mocks/data';
 
 describe('StatsOverview component', () => {
-  it('should render 4 KPI cards with calculated metrics', () => {
+  it('should render 4 KPI cards with metrics from summary', () => {
     render(
       <StatsOverview
-        invoices={mockInvoices}
-        transfers={mockTransfers}
+        summary={mockDashboardSummary}
         scheduler={mockSchedulerStatus}
-        totalInvoicesCount={mockInvoices.length}
       />
     );
 
     expect(screen.getByText('Total Emitido Pix')).toBeInTheDocument();
+    expect(screen.getByText('R$ 12.819,17')).toBeInTheDocument();
+    expect(screen.getByText('157 faturas emitidas')).toBeInTheDocument();
+
     expect(screen.getByText('Total Liquidado')).toBeInTheDocument();
+    expect(screen.getByText('R$ 13.009,87')).toBeInTheDocument();
+    expect(screen.getByText('50 liquidadas com sucesso')).toBeInTheDocument();
+
     expect(screen.getByText('Faturas Creditadas')).toBeInTheDocument();
+    expect(screen.getByText(/44/)).toBeInTheDocument();
+    expect(screen.getByText(/\(28.03% pago\)/)).toBeInTheDocument();
+
     expect(screen.getByText('Janela 24h')).toBeInTheDocument();
+    expect(screen.getByText(/2 \/ 8/)).toBeInTheDocument();
+    expect(screen.getByText('Agendador Operante')).toBeInTheDocument();
+    expect(screen.getByText(/· 1 manual/)).toBeInTheDocument();
   });
 
-  it('should only compute transfers with status success in Total Liquidado', () => {
-    const mixedTransfers: TransferRecord[] = [
-      {
-        id: 'trf-1',
-        stark_transfer_id: 'stark-1',
-        stark_invoice_id: 'inv-1',
-        event_id: 'evt-1',
-        amount: 10000,
-        fee: 0,
-        net_amount: 10000, // R$ 100,00
-        target_bank_code: '20018183',
-        target_branch: '0001',
-        target_account: '123',
-        target_name: 'Stark Bank S.A.',
-        target_tax_id: '20018183000180',
-        target_account_type: 'payment',
-        status: 'success',
-        created: new Date().toISOString(),
-      },
-      {
-        id: 'trf-2',
-        stark_transfer_id: 'stark-2',
-        stark_invoice_id: 'inv-2',
-        event_id: 'evt-2',
-        amount: 50000,
-        fee: 0,
-        net_amount: 50000, // R$ 500,00 (não deve ser somado)
-        target_bank_code: '20018183',
-        target_branch: '0001',
-        target_account: '123',
-        target_name: 'Stark Bank S.A.',
-        target_tax_id: '20018183000180',
-        target_account_type: 'payment',
-        status: 'created',
-        created: new Date().toISOString(),
-      },
-    ];
-
+  it('should handle null summary gracefully with default zeros', () => {
     render(
       <StatsOverview
-        invoices={[]}
-        transfers={mixedTransfers}
+        summary={null}
         scheduler={null}
       />
     );
 
-    // Deve exibir apenas R$ 100,00 liquidado (e não R$ 600,00)
-    expect(screen.getByText('R$ 100,00')).toBeInTheDocument();
-    expect(screen.getByText('1 de 2 liquidadas')).toBeInTheDocument();
+    expect(screen.getAllByText('R$ 0,00').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText('0 faturas emitidas')).toBeInTheDocument();
+    expect(screen.getByText('0 liquidadas com sucesso')).toBeInTheDocument();
+    expect(screen.getByText(/\(0% pago\)/)).toBeInTheDocument();
   });
 });
+
 

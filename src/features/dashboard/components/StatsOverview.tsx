@@ -7,34 +7,24 @@ import {
   Clock,
   ArrowUpRight,
 } from 'lucide-react';
-import { Invoice } from '@/features/invoices/types';
-import { TransferRecord } from '@/features/transfers/types';
+import { DashboardSummaryResponse } from '@/features/dashboard/types';
 import { SchedulerStatus } from '@/features/scheduler/types';
 
 interface StatsOverviewProps {
-  invoices: Invoice[];
-  transfers: TransferRecord[];
+  summary?: DashboardSummaryResponse | null;
   scheduler: SchedulerStatus | null;
-  totalInvoicesCount?: number;
 }
 
 export function StatsOverview({
-  invoices,
-  transfers,
+  summary,
   scheduler,
-  totalInvoicesCount,
 }: StatsOverviewProps) {
-  // Calculando totais
-  const totalInvoiced = invoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
-  const creditedInvoices = invoices.filter((i) => i.status === 'credited');
-
-  // Liquidação: Conta apenas transferências com status 'success'
-  const successTransfers = transfers.filter((t) => t.status === 'success');
-  const totalLiquidated = successTransfers.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
-
-  const conversionRate = invoices.length > 0
-    ? Math.round((creditedInvoices.length / invoices.length) * 100)
-    : 0;
+  const totalInvoiced = summary?.total_invoiced_cents ?? 0;
+  const totalInvoicesCount = summary?.total_invoices_count ?? 0;
+  const totalLiquidated = summary?.total_liquidated_cents ?? 0;
+  const totalLiquidatedCount = summary?.total_liquidated_count ?? 0;
+  const totalCreditedCount = summary?.total_credited_count ?? 0;
+  const conversionRate = summary?.conversion_rate_percentage ?? 0;
 
   const scheduledCycles = scheduler?.scheduled_cycles_completed ?? 0;
   const manualCycles = scheduler?.manual_triggers_completed ?? 0;
@@ -55,7 +45,7 @@ export function StatsOverview({
           {formatCentsToBRL(totalInvoiced)}
         </div>
         <div className="flex items-center gap-1.5 text-2xs text-zoho-slate-muted dark:text-zoho-slate-darkMuted font-mono">
-          <span>{totalInvoicesCount || invoices.length} faturas emitidas</span>
+          <span>{totalInvoicesCount} faturas emitidas</span>
         </div>
       </Card>
 
@@ -75,7 +65,7 @@ export function StatsOverview({
         <div className="flex items-center gap-1 text-2xs text-emerald-600 dark:text-emerald-400 font-mono">
           <ArrowUpRight className="w-3 h-3" />
           <span>
-            {successTransfers.length} {transfers.length > 0 ? `de ${transfers.length}` : ''} liquidada{transfers.length > 1 ? 's' : ''}
+            {totalLiquidatedCount} liquidada{totalLiquidatedCount !== 1 ? 's' : ''} com sucesso
           </span>
         </div>
       </Card>
@@ -91,7 +81,7 @@ export function StatsOverview({
           </div>
         </div>
         <div className="text-xl font-bold font-mono text-slate-900 dark:text-white tracking-tight">
-          {creditedInvoices.length}{' '}
+          {totalCreditedCount}{' '}
           <span className="text-xs font-normal text-zoho-slate-muted dark:text-zoho-slate-darkMuted">
             ({conversionRate}% pago)
           </span>
@@ -99,7 +89,7 @@ export function StatsOverview({
         <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
           <div
             className="bg-amber-500 h-full rounded-full transition-all duration-500"
-            style={{ width: `${Math.min(100, conversionRate)}%` }}
+            style={{ width: `${Math.min(100, Math.max(0, conversionRate))}%` }}
           />
         </div>
       </Card>
@@ -135,3 +125,4 @@ export function StatsOverview({
     </div>
   );
 }
+

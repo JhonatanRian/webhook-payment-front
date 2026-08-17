@@ -64,6 +64,18 @@ describe('api client & services', () => {
     expect(res.status).toBe('reset');
   });
 
+  it('should fetch dashboard summary metrics', async () => {
+    const summary = await api.dashboard.getSummary();
+    expect(summary).toBeDefined();
+    expect(typeof summary.total_invoiced_cents).toBe('number');
+    expect(typeof summary.total_invoices_count).toBe('number');
+    expect(typeof summary.total_credited_cents).toBe('number');
+    expect(typeof summary.total_credited_count).toBe('number');
+    expect(typeof summary.total_liquidated_cents).toBe('number');
+    expect(typeof summary.total_liquidated_count).toBe('number');
+    expect(typeof summary.conversion_rate_percentage).toBe('number');
+  });
+
   it('should test apiClient request interceptor', async () => {
     // Interceptor test
     const config = { headers: {} as Record<string, string> };

@@ -1,22 +1,19 @@
 import { Card } from '@/components/ui/Card';
 import { formatCentsToBRL } from '@/utils/currency';
 import { ArrowRight, CheckCircle2, ShieldCheck, Zap, Layers } from 'lucide-react';
-import { Invoice } from '@/features/invoices/types';
-import { TransferRecord } from '@/features/transfers/types';
+import { DashboardSummaryResponse } from '@/features/dashboard/types';
 
 interface MoneyFlowCardProps {
-  invoices: Invoice[];
-  transfers: TransferRecord[];
+  summary?: DashboardSummaryResponse | null;
 }
 
-export function MoneyFlowCard({ invoices, transfers }: MoneyFlowCardProps) {
-  const totalInvoiced = invoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
-  const creditedInvoices = invoices.filter((i) => i.status === 'credited');
-  const totalCredited = creditedInvoices.reduce((acc, curr) => acc + (curr.amount || 0), 0);
-
-  // Liquidação: Conta apenas transferências com status 'success'
-  const successTransfers = transfers.filter((t) => t.status === 'success');
-  const totalLiquidated = successTransfers.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
+export function MoneyFlowCard({ summary }: MoneyFlowCardProps) {
+  const totalInvoiced = summary?.total_invoiced_cents ?? 0;
+  const totalInvoicesCount = summary?.total_invoices_count ?? 0;
+  const totalCredited = summary?.total_credited_cents ?? 0;
+  const totalCreditedCount = summary?.total_credited_count ?? 0;
+  const totalLiquidated = summary?.total_liquidated_cents ?? 0;
+  const totalLiquidatedCount = summary?.total_liquidated_count ?? 0;
 
   return (
     <Card padding="md" className="space-y-4">
@@ -49,7 +46,7 @@ export function MoneyFlowCard({ invoices, transfers }: MoneyFlowCardProps) {
             {formatCentsToBRL(totalInvoiced)}
           </div>
           <p className="text-2xs text-zoho-slate-muted dark:text-zoho-slate-darkMuted">
-            {invoices.length} faturas geradas nos ciclos
+            {totalInvoicesCount} faturas geradas nos ciclos
           </p>
         </div>
 
@@ -65,7 +62,7 @@ export function MoneyFlowCard({ invoices, transfers }: MoneyFlowCardProps) {
             {formatCentsToBRL(totalCredited)}
           </div>
           <p className="text-2xs text-zoho-slate-muted dark:text-zoho-slate-darkMuted">
-            {creditedInvoices.length} créditos confirmados via webhook
+            {totalCreditedCount} créditos confirmados via webhook
           </p>
         </div>
 
@@ -81,10 +78,11 @@ export function MoneyFlowCard({ invoices, transfers }: MoneyFlowCardProps) {
             {formatCentsToBRL(totalLiquidated)}
           </div>
           <p className="text-2xs text-zoho-slate-muted dark:text-zoho-slate-darkMuted">
-            {successTransfers.length} repasse{successTransfers.length !== 1 ? 's' : ''} efetuado{successTransfers.length !== 1 ? 's' : ''} com sucesso
+            {totalLiquidatedCount} repasse{totalLiquidatedCount !== 1 ? 's' : ''} efetuado{totalLiquidatedCount !== 1 ? 's' : ''} com sucesso
           </p>
         </div>
       </div>
     </Card>
   );
 }
+
